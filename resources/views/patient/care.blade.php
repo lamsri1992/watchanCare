@@ -64,7 +64,7 @@
                 </div>
                 <div class="col-md-6 text-right">
                     <div class="btn-group" role="group">
-                        <button type="button" class="btn btn-secondary btn-sm">
+                        <button type="button" class="btn btn-secondary btn-sm" data-toggle="modal" data-target="#addNew">
                             <i class="fa-solid fa-calendar-plus"></i>
                             เพิ่มรายการติดตาม
                         </button>
@@ -90,20 +90,6 @@
                             1 ส.ค. 2565
                         </a>
                     </li>
-                    <li class="nav-item">
-                        <a class="nav-link" id="profile-vertical-tab" data-toggle="tab" href="#profile-vertical"
-                            role="tab" aria-controls="profile" aria-selected="false">
-                            <i class="fa-regular fa-calendar-check"></i>
-                            10 ส.ค. 2565
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" id="contact-vertical-tab" data-toggle="tab" href="#contact-vertical"
-                            role="tab" aria-controls="contact" aria-selected="false">
-                            <i class="fa-regular fa-calendar-check"></i>
-                            20 ส.ค. 2565
-                        </a>
-                    </li>
                 </ul>
                 <div class="tab-content" id="myTabContent3">
                     <div class="tab-pane fade show active" id="home-vertical" role="tabpanel"
@@ -124,46 +110,92 @@
                             ตัวเย็น กล้ามเนื้อเกร็ง (ตะคริว) ความดันโลหิตลดลง และรู้สึกไม่สบาย สะดุ้ง ตกใจง่าย
                         </p>
                     </div>
-                    <div class="tab-pane fade" id="profile-vertical" role="tabpanel"
-                        aria-labelledby="profile-vertical-tab">
-                        <p class="lead">
-                            <i class="fa-regular fa-clipboard"></i>
-                            ผู้ติดตามการเยี่ยม : นายวัดจันทร์ กัลยา (พยาบาลวิชาชีพ ปฏิบัติการ)
-                        </p>
-                        <p>
-                            อาการเมาค้าง เป็นภาวะหรืออาการที่คล้ายกับไข้หวัดใหญ่ คือ การที่ร่างกายขาดน้ำ
-                            เป็นผลที่เกิดหลังจากการดื่มเครื่องดื่มแอลกอฮอล์ในปริมาณที่มากเกินร่างกายจะสามารถรับได้
-                            ส่งผลให้เสียสมดุลของฮอร์โมน เกิดการเปลี่ยนแปลงของสารสื่อประสาท และสารทางชีวภาพอื่นๆ ในร่างกาย
-                        </p>
-                        <p>
-                            อาการเมาค้างโดยทั่วไป ได้แก่ ปวดหัว มึนหัว เวียนศีรษะ คอแห้ง ผิวหน้าแห้ง ริมฝีปากแห้ง หน้าบวม ตาบวมผื่นแดง
-                            รอยแดง หน้าซีดเซียว คลื่นเหียน คลื่นไส้ อาเจียน ปวดท้อง ท้องขึ้น ท้องเฟ้อ หรือท้องร่วง ถ่ายเหลว รับประทานอาหารไม่ได้
-                            เบื่ออาหาร นอนไม่ได้ สะลึมสะลือ กระเพาะอาหารเกิดการระคายเคือง มือสั่น ใจสั่น เหนื่อย เหงื่อออก หรืออ่อนเพลีย หมดแรงลุกไม่ขึ้น
-                            ตัวเย็น กล้ามเนื้อเกร็ง (ตะคริว) ความดันโลหิตลดลง และรู้สึกไม่สบาย สะดุ้ง ตกใจง่าย
-                        </p>
-                    </div>
-                    <div class="tab-pane fade" id="contact-vertical" role="tabpanel"
-                        aria-labelledby="contact-vertical-tab">
-                        <p class="lead">
-                            <i class="fa-regular fa-clipboard"></i>
-                            ผู้ติดตามการเยี่ยม : นายวัดจันทร์ กัลยา (พยาบาลวิชาชีพ ปฏิบัติการ)
-                        </p>
-                        <p>
-                            อาการเมาค้าง เป็นภาวะหรืออาการที่คล้ายกับไข้หวัดใหญ่ คือ การที่ร่างกายขาดน้ำ
-                            เป็นผลที่เกิดหลังจากการดื่มเครื่องดื่มแอลกอฮอล์ในปริมาณที่มากเกินร่างกายจะสามารถรับได้
-                            ส่งผลให้เสียสมดุลของฮอร์โมน เกิดการเปลี่ยนแปลงของสารสื่อประสาท และสารทางชีวภาพอื่นๆ ในร่างกาย
-                        </p>
-                        <p>
-                            อาการเมาค้างโดยทั่วไป ได้แก่ ปวดหัว มึนหัว เวียนศีรษะ คอแห้ง ผิวหน้าแห้ง ริมฝีปากแห้ง หน้าบวม ตาบวมผื่นแดง
-                            รอยแดง หน้าซีดเซียว คลื่นเหียน คลื่นไส้ อาเจียน ปวดท้อง ท้องขึ้น ท้องเฟ้อ หรือท้องร่วง ถ่ายเหลว รับประทานอาหารไม่ได้
-                            เบื่ออาหาร นอนไม่ได้ สะลึมสะลือ กระเพาะอาหารเกิดการระคายเคือง มือสั่น ใจสั่น เหนื่อย เหงื่อออก หรืออ่อนเพลีย หมดแรงลุกไม่ขึ้น
-                            ตัวเย็น กล้ามเนื้อเกร็ง (ตะคริว) ความดันโลหิตลดลง และรู้สึกไม่สบาย สะดุ้ง ตกใจง่าย
-                        </p>
-                    </div>
                 </div>
             </div>
         </div>
     </div>
+</div>
+<!-- Modal -->
+<div class="modal fade" id="addNew" tabindex="-1" aria-labelledby="addNewLabel" aria-hidden="true">
+    <form action="#">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="addNewLabel">
+                        <i class="fa-solid fa-calendar-plus"></i>
+                        เพิ่มรายการติดตาม
+                    </h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-row">
+                        <div class="form-group col-md-6">
+                            <label for="">
+                                <i class="fa-solid fa-calendar-check"></i>
+                                วันที่ติดตามเยี่ยม
+                            </label>
+                            <input type="text" id="visit_date" name="visit_date" class="form-control basicDate"
+                                value="{{ old('visit_date') }}"
+                                placeholder="เลือกวันที่" readonly>
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label for="">
+                                สถานะผู้ป่วย
+                            </label>
+                            <input type="text" id="visit_patient_status" name="visit_patient_status" class="form-control"
+                                value="{{ old('visit_patient_status') }}"
+                                placeholder="">
+                        </div>
+                        <div class="form-group col-md-12">
+                            <label for="">
+                                Vital Sign
+                            </label>
+                            <input type="text" id="" name="" class="form-control"
+                                value="{{ old('') }}"
+                                placeholder="">
+                        </div>
+                        <div class="form-group col-md-12">
+                            <label for="">
+                                ประวัติการเจ็บป่วย
+                            </label>
+                            <textarea type="text" id="" name="" rows="5" class="form-control" value="{{ old('') }}"></textarea>
+                        </div>
+                        <div class="form-group col-md-12">
+                            <label for="">
+                                ประวัติการตรวจร่างกาย
+                            </label>
+                            <textarea type="text" id="" name="" rows="5" class="form-control" value="{{ old('') }}"></textarea>
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label for="">
+                                การวินิจฉัย
+                            </label>
+                            <input type="text" id="" name="" class="form-control"
+                                value="{{ old('') }}"
+                                placeholder="">
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label for="">
+                                รายการตรวจรักษา
+                            </label>
+                            <input type="text" id="" name="" class="form-control"
+                                value="{{ old('') }}"
+                                placeholder="">
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal">ปิดหน้าต่าง</button>
+                    <button type="button" class="btn btn-success btn-sm">
+                        <i class="fa-solid fa-save"></i>
+                        บันทึกการติดตาม
+                    </button>
+                </div>
+            </div>
+        </div>
+    </form>
 </div>
 @endsection
 @section('script')
