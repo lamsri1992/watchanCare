@@ -49,7 +49,7 @@
                                         <div class="input-group-text">
                                             <a id="hn_find" type="button" style="font-size: 1rem;">
                                                 <small class="text-muted">
-                                                    <i class="fa-solid fa-search"></i> Enter
+                                                    <i class="fa-solid fa-search"></i> ค้นหา
                                                 </small>
                                             </a>
                                         </div>
@@ -70,7 +70,10 @@
                                 <select id="patient_prefix" name="patient_prefix" class="custom-select">
                                     <option>กรุณาเลือก</option>
                                     @foreach($prefix as $res)
-                                        <option value="{{ $res->prefix_value }}">{{ $res->prefix_name }}</option>
+                                        <option value="{{ $res->prefix_value }}"
+                                            {{ old('patient_prefix') === $res->prefix_value ? 'selected' : '' }}>
+                                            {{ $res->prefix_name }}
+                                        </option>
                                     @endforeach
                                 </select>
                             </div>
@@ -84,7 +87,10 @@
                                 <select id="patient_gender" name="patient_gender" class="custom-select">
                                     <option>กรุณาเลือก</option>
                                     @foreach($sex as $res)
-                                        <option value="{{ $res->sex_id }}">{{ $res->sex_name }}</option>
+                                        <option value="{{ $res->sex_id }}"
+                                            {{ old('patient_gender') === $res->sex_id ? 'selected' : '' }}>
+                                            {{ $res->sex_name }}
+                                        </option>
                                     @endforeach
                                 </select>
                             </div>
@@ -187,6 +193,14 @@
                                 <input type="text" id="pc_date_start" name="pc_date_start" class="form-control basicDate"
                                     value="{{ old('pc_date_start') }}" placeholder="เลือกวันที่" readonly>
                             </div>
+                            <div class="form-group col-md-12">
+                                <label class="font-weight-bold">
+                                    <i class="fa-solid fa-prescription-bottle-medical"></i>
+                                    ข้อมูลแพ้ยา
+                                </label>
+                                <div id="container"></div>
+                                <div id="drugAllergy"></div>
+                            </div>
                         </div>
                         <div class="text-right" style="margin-top: 1rem;">
                             <button type="button" class="btn btn-success" onclick="Swal.fire({
@@ -218,17 +232,6 @@
 @endsection
 @section('script')
 <script>
-    document.onkeydown = fkey;
-    document.onkeypress = fkey
-    document.onkeyup = fkey;
-
-    function fkey(e) {
-        if (e.keyCode == 13) {
-            e.preventDefault();
-            $('#hn_find').click();
-        }
-    }
-
     $('#hn_find').click(function () {
         var regSelect = $('#basic-select2');
         var id = document.getElementById("hn").value;
@@ -284,6 +287,35 @@
                         timer: 1500
                     })
                 }
+                var pid = result.t_patient_id;
+                $.ajax({
+                    url: "http://172.20.55.222:5500/drug_allergy/" + pid,
+                    success: function (result) {
+                        if ($.trim(result)) {
+                            var container = document.querySelector('#container');
+                            var ul = document.createElement('ul');
+                            result.forEach(function (item) {
+                                var li = document.createElement('li');
+                                li.textContent = item.item_drug_standard_description;
+                                ul.appendChild(li);
+                            });
+                                
+                            container.appendChild(ul);
+                                for (var i = 0; i < result.length; i++) {
+                                var row =
+                                    $('<input type="hidden" name="drug[]" value="'+ result[i].item_drug_standard_description +'">');
+                                    $('#drugAllergy').append(row);
+                                }
+                            }
+                        },
+                        error: function (jqXHR, textStatus, errorThrown) {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'ไม่สามารถเชื่อมต่อ DRUG API ได้',
+                            text: 'Error: ' + textStatus + ' - ' + errorThrown,
+                        })
+                    }
+                });
             },
             error: function (jqXHR, textStatus, errorThrown) {
                 Swal.fire({

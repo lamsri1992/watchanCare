@@ -73,6 +73,14 @@ class patientController extends Controller
         $newYear = date("Y",strtotime($request->get('patient_dob')))-543;
         $newdob = $newYear.$dob;
 
+        if($request->get('drug')){
+            $arr_select = array();
+            foreach($request->get('drug') as $drug){
+                $arr_select[] = $drug;
+            }
+            $drugs = implode(" <br> ", $arr_select);
+        }else{ $drugs = ""; }
+
         DB::table('patient')->insert(
             [
                 "patient_hn" => $request->get('patient_hn'),
@@ -89,7 +97,8 @@ class patientController extends Controller
                 "patient_htambon" => $request->get('patient_htambon'),
                 "patient_aumphur" => $request->get('patient_aumphur'),
                 "patient_province" => $request->get('patient_province'),
-                "patient_hcode" => $request->get('patient_hcode')
+                "patient_hcode" => $request->get('patient_hcode'),
+                'patient_drug_allergy' => $drugs,
             ]
         );
 

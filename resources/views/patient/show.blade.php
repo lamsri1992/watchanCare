@@ -64,14 +64,26 @@
                                 <span>
                                 {{ 
                                     "บ้านเลขที่ ".$patient->patient_hno." ถนน".$patient->patient_hroad." ตำบล".$patient->dis_name
-                                    ." หมู่ ".$patient->patient_hmoo." หมู่บ้าน".$patient->patient_hmooname 
+                                    ." หมู่ ".$patient->patient_hmoo." ".$patient->patient_hmooname 
                                 }}
                                 </span>
                                 <br>
-                                <a href="#" class="badge badge-danger">
+                                <a href="#" class="badge badge-success">
                                     <i class="fa-solid fa-location-arrow"></i>
                                     แผนที่ GPS
                                 </a>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>ประวัติแพ้ยา</th>
+                            <td>
+                                @if ($patient->patient_drug_allergy == "")
+                                <small class="text-danger">ไม่มีประวัติแพ้ยา</small>
+                                @else
+                                <li>
+                                    {{ $patient->patient_drug_allergy }}
+                                </li>
+                                @endif
                             </td>
                         </tr>
                     </table>
