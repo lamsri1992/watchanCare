@@ -1,5 +1,16 @@
 @extends('layouts.app')
 @section('content')
+<style>
+    .select2-selection__rendered {
+        line-height: 38px !important;
+    }
+    .select2-container .select2-selection--single {
+        height: 39px !important;
+    }
+    .select2-selection__arrow {
+        height: 38px !important;
+    }
+</style>
 <div class="container-fluid">
     <div class="d-sm-flex align-items-center justify-content-between">
         <h5 class="h6 text-gray-800">
@@ -116,7 +127,7 @@
     </div>
 </div>
 <!-- Modal -->
-<div class="modal fade" id="addNew" tabindex="-1" aria-labelledby="addNewLabel" aria-hidden="true">
+<div class="modal fade" id="addNew" aria-labelledby="addNewLabel" aria-hidden="true">
     <form action="#">
         <div class="modal-dialog modal-xl">
             <div class="modal-content">
@@ -144,45 +155,102 @@
                             <label for="">
                                 สถานะผู้ป่วย
                             </label>
-                            <input type="text" id="visit_patient_status" name="visit_patient_status" class="form-control"
-                                value="{{ old('visit_patient_status') }}"
-                                placeholder="">
+                            <select name="visit_status" class="custom-select">
+                                <option>กรุณาเลือก</option>
+                                <option value="">ผู้พิการ</option>
+                                <option value="">ผู้สูงอายุ</option>
+                                <option value="">ไม่ระบุ</option>
+                            </select>
                         </div>
                         <div class="form-group col-md-12">
                             <label for="">
+                                <i class="fa-solid fa-heart-pulse"></i>
                                 Vital Sign
                             </label>
-                            <input type="text" id="" name="" class="form-control"
-                                value="{{ old('') }}"
-                                placeholder="">
+                            <table class="table table-borderless table-striped table-sm text-center">
+                                <thead class="thead-dark">
+                                    <tr>
+                                        <th>Temp</th>
+                                        <th>BP</th>
+                                        <th>RR</th>
+                                        <th>HR</th>
+                                        <th>น้ำหนัก</th>
+                                        <th>ส่วนสูง</th>
+                                        <th>BMI</th>
+                                        <th>O2sat</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>
+                                            <input type="text" name="" class="form-control text-center"
+                                            value="{{ old('') }}" placeholder="">
+                                        </td>
+                                        <td>
+                                            <input type="text" name="" class="form-control text-center"
+                                            value="{{ old('') }}" placeholder="">
+                                        </td>
+                                        <td>
+                                            <input type="text" name="" class="form-control text-center"
+                                            value="{{ old('') }}" placeholder="">
+                                        </td>
+                                        <td>
+                                            <input type="text" name="" class="form-control text-center"
+                                            value="{{ old('') }}" placeholder="">
+                                        </td>
+                                        <td>
+                                            <input type="text" name="" class="form-control text-center"
+                                            value="{{ old('') }}" placeholder="">
+                                        </td>
+                                        <td>
+                                            <input type="text" name="" class="form-control text-center"
+                                            value="{{ old('') }}" placeholder="">
+                                        </td>
+                                        <td>
+                                            <input type="text" name="" class="form-control text-center"
+                                            value="{{ old('') }}" placeholder="">
+                                        </td>
+                                        <td>
+                                            <input type="text" name="" class="form-control text-center"
+                                            value="{{ old('') }}" placeholder="">
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
                         </div>
                         <div class="form-group col-md-12">
                             <label for="">
                                 ประวัติการเจ็บป่วย
                             </label>
-                            <textarea type="text" id="" name="" rows="5" class="form-control" value="{{ old('') }}"></textarea>
+                            <textarea type="text" id="" name="" rows="3" class="form-control" value="{{ old('') }}"></textarea>
                         </div>
                         <div class="form-group col-md-12">
                             <label for="">
                                 ประวัติการตรวจร่างกาย
                             </label>
-                            <textarea type="text" id="" name="" rows="5" class="form-control" value="{{ old('') }}"></textarea>
+                            <textarea type="text" id="" name="" rows="3" class="form-control" value="{{ old('') }}"></textarea>
                         </div>
-                        <div class="form-group col-md-6">
+                        <div class="form-group col-md-12">
                             <label for="">
                                 การวินิจฉัย
                             </label>
-                            <input type="text" id="" name="" class="form-control"
-                                value="{{ old('') }}"
-                                placeholder="">
+                            <select id="visit_icd10" name="visit_icd10" class="basic-select2">
+                                <option>กรุณาเลือก</option>
+                                @foreach($icd10 as $res)
+                                    <option value="{{ $res->id }}">{{ $res->icd10_number." : ".$res->icd10_description }}</option>
+                                @endforeach
+                            </select>
                         </div>
-                        <div class="form-group col-md-6">
+                        <div class="form-group col-md-12">
                             <label for="">
                                 รายการตรวจรักษา
                             </label>
-                            <input type="text" id="" name="" class="form-control"
-                                value="{{ old('') }}"
-                                placeholder="">
+                            <select id="visit_item" name="visit_item[]" class="basic-multiple" multiple="multiple">
+                                <option>กรุณาเลือก</option>
+                                @foreach($item as $res)
+                                    <option value="{{ $res->item_id }}">{{ $res->item_common_name }}</option>
+                                @endforeach
+                            </select>
                         </div>
                     </div>
                 </div>

@@ -180,7 +180,8 @@ class patientController extends Controller
                 ->join('clinic','clinic.id','patient_clinic.pc_clinic')
                 ->where('pc_id',$id)
                 ->first();
-        // dd($pcn);
-        return view('patient.care',['patient'=>$patient]);
+        $item = DB::table('item')->where('item_active',1)->get();
+        $icd10 = DB::table('icd10')->where('icd10_active',1)->get();
+        return view('patient.care',['patient'=>$patient,'item'=>$item,'icd10'=>$icd10]);
     }
 }
