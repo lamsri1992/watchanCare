@@ -25,6 +25,7 @@ Route::group(['prefix' => 'patient'], function () {
 	Route::get('/edit/{id}','patientController@editPatient')->name('patient.edit');
 	Route::get('/update/{id}','patientController@updatePatient')->name('patient.update');
 	Route::get('/care/{id}','patientController@showCare')->name('patient.care');
+	Route::get('/visit/{id}','patientController@visit')->name('patient.visit');
 });
 
 Route::group(['prefix' => 'config/clinic'], function () {

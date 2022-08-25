@@ -94,17 +94,22 @@
         <div class="card-body" style="font-size: 14px;">
             <div class="tab-vertical">
                 <ul class="nav nav-tabs" id="myTab3" role="tablist">
+                    @php $i=0; @endphp
+                    @foreach ($visit as $vs)
+                    @php $i++; @endphp
                     <li class="nav-item">
-                        <a class="nav-link active" id="home-vertical-tab" data-toggle="tab" href="#home-vertical"
-                            role="tab" aria-controls="home" aria-selected="true">
+                            <a class="nav-link tabClick" id="box-vertical" data-toggle="tab" href="#box-vertical{{ $vs->visit_id }}"
+                            role="tab" aria-controls="home" aria-selected="true"
+                            data-id="{{ $vs->visit_id }}">
                             <i class="fa-regular fa-calendar-check"></i>
-                            1 ส.ค. 2565
+                            {{ DateThai($vs->visit_date) }}
                         </a>
                     </li>
+                    @endforeach
                 </ul>
                 <div class="tab-content" id="myTabContent3">
-                    <div class="tab-pane fade show active" id="home-vertical" role="tabpanel"
-                        aria-labelledby="home-vertical-tab">
+                    <div class="tab-pane fade show active" id="box-vertical{{ $vs->visit_id }}" role="tabpanel"
+                        aria-labelledby="box-vertical">
                         <p class="lead">
                             <i class="fa-regular fa-clipboard"></i>
                             ผู้ติดตามการเยี่ยม : นายวัดจันทร์ กัลยา (พยาบาลวิชาชีพ ปฏิบัติการ)
@@ -128,7 +133,7 @@
 </div>
 <!-- Modal -->
 <div class="modal fade" id="addNew" aria-labelledby="addNewLabel" aria-hidden="true">
-    <form action="#">
+    <form action="{{ route('patient.visit',$patient->pc_id) }}">
         <div class="modal-dialog modal-xl">
             <div class="modal-content">
                 <div class="modal-header">
@@ -157,9 +162,9 @@
                             </label>
                             <select name="visit_status" class="custom-select">
                                 <option>กรุณาเลือก</option>
-                                <option value="">ผู้พิการ</option>
-                                <option value="">ผู้สูงอายุ</option>
-                                <option value="">ไม่ระบุ</option>
+                                <option value="1">ผู้พิการ</option>
+                                <option value="2">ผู้สูงอายุ</option>
+                                <option value="0">ไม่ระบุ</option>
                             </select>
                         </div>
                         <div class="form-group col-md-12">
@@ -183,36 +188,36 @@
                                 <tbody>
                                     <tr>
                                         <td>
-                                            <input type="text" name="" class="form-control text-center"
-                                            value="{{ old('') }}" placeholder="">
+                                            <input type="text" name="temp" class="form-control text-center"
+                                            value="{{ old('temp') }}">
                                         </td>
                                         <td>
-                                            <input type="text" name="" class="form-control text-center"
-                                            value="{{ old('') }}" placeholder="">
+                                            <input type="text" name="bp" class="form-control text-center"
+                                            value="{{ old('bp') }}">
                                         </td>
                                         <td>
-                                            <input type="text" name="" class="form-control text-center"
-                                            value="{{ old('') }}" placeholder="">
+                                            <input type="text" name="rr" class="form-control text-center"
+                                            value="{{ old('rr') }}">
                                         </td>
                                         <td>
-                                            <input type="text" name="" class="form-control text-center"
-                                            value="{{ old('') }}" placeholder="">
+                                            <input type="text" name="hr" class="form-control text-center"
+                                            value="{{ old('hr') }}">
                                         </td>
                                         <td>
-                                            <input type="text" name="" class="form-control text-center"
-                                            value="{{ old('') }}" placeholder="">
+                                            <input type="text" name="weight" class="form-control text-center"
+                                            value="{{ old('weight') }}">
                                         </td>
                                         <td>
-                                            <input type="text" name="" class="form-control text-center"
-                                            value="{{ old('') }}" placeholder="">
+                                            <input type="text" name="height" class="form-control text-center"
+                                            value="{{ old('height') }}">
                                         </td>
                                         <td>
-                                            <input type="text" name="" class="form-control text-center"
-                                            value="{{ old('') }}" placeholder="">
+                                            <input type="text" name="bmi" class="form-control text-center"
+                                            value="{{ old('bmi') }}">
                                         </td>
                                         <td>
-                                            <input type="text" name="" class="form-control text-center"
-                                            value="{{ old('') }}" placeholder="">
+                                            <input type="text" name="osat" class="form-control text-center"
+                                            value="{{ old('osat') }}">
                                         </td>
                                     </tr>
                                 </tbody>
@@ -222,13 +227,13 @@
                             <label for="">
                                 ประวัติการเจ็บป่วย
                             </label>
-                            <textarea type="text" id="" name="" rows="3" class="form-control" value="{{ old('') }}"></textarea>
+                            <textarea type="text" name="ccpi" rows="3" class="form-control" value="{{ old('ccpi') }}"></textarea>
                         </div>
                         <div class="form-group col-md-12">
                             <label for="">
                                 ประวัติการตรวจร่างกาย
                             </label>
-                            <textarea type="text" id="" name="" rows="3" class="form-control" value="{{ old('') }}"></textarea>
+                            <textarea type="text" name="psexam" rows="3" class="form-control" value="{{ old('psexam') }}"></textarea>
                         </div>
                         <div class="form-group col-md-12">
                             <label for="">
@@ -259,7 +264,20 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal">ปิดหน้าต่าง</button>
-                    <button type="button" class="btn btn-success btn-sm">
+                    <button type="button" class="btn btn-success btn-sm"
+                        onclick="Swal.fire({
+                            title: 'บันทึกการติดตาม ?',
+                            showCancelButton: true,
+                            confirmButtonText: `<i class='fa-solid fa-folder-plus'></i> บันทึกข้อมูล`,
+                            cancelButtonText: `<i class='fa-regular fa-times-circle'></i> ยกเลิก`,
+                            icon: 'success',
+                        }).then((result) => {
+                            if (result.isConfirmed) {
+                                form.submit();
+                            } else if (result.isDenied) {
+                                form.reset();
+                            }
+                        })">
                         <i class="fa-solid fa-save"></i>
                         บันทึกการติดตาม
                     </button>
@@ -291,6 +309,16 @@
                 },
                 cache: true
             }
+        });
+    });
+
+    $('.tabClick').click(function () {
+        var id = $(this).data('id');
+        $.ajax({
+            url: "/api/visit/" + id,
+            success: function (data) {
+                console.log(data)
+            },
         });
     });
 </script>

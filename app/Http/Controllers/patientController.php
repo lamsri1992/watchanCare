@@ -181,7 +181,60 @@ class patientController extends Controller
                 ->where('pc_id',$id)
                 ->first();
         $item = DB::table('item')->where('item_active',1)->get();
-        $icd10 = DB::table('icd10')->where('icd10_active',1)->get();
-        return view('patient.care',['patient'=>$patient,'item'=>$item,'icd10'=>$icd10]);
+        $visit = DB::table('patient_visit')
+                ->where('visit_patient_care',$id)
+                ->get();
+        return view('patient.care',['patient'=>$patient,'item'=>$item,'visit'=>$visit]);
+    }
+
+    public function visit(Request $request,$id)
+    {
+        $validatedData = $request->validate(
+            [
+                'visit_date' => 'required',
+                'visit_status' => 'required',
+                'temp' => 'required',
+                'bp' => 'required',
+                'rr' => 'required',
+                'hr' => 'required',
+                'weight' => 'required',
+                'height' => 'required',
+                'bmi' => 'required',
+                'osat' => 'required',
+                'ccpi' => 'required',
+                'psexam' => 'required',
+                'visit_icd10' => 'required',
+                'visit_item' => 'required',
+            ],
+        );
+
+        if($request->get('visit_item')){
+            $arr_select = array();
+            foreach($request->get('visit_item') as $visit_item){
+                $arr_select[] = $visit_item;
+            }
+            $visit_items = implode(",", $arr_select);
+        }else{
+            $visit_items = "";
+        }
+
+        $vital = $request->get('temp').",".$request->get('bp').",".$request->get('rr').",".
+        $request->get('hr').",".$request->get('weight').",".$request->get('height').",".$request->get('bmi').",".
+        $request->get('osat');
+
+        DB::table('patient_visit')->insert(
+            [
+                "visit_patient_care" => $id,
+                "visit_date" => $request->get('visit_date'),
+                "visit_patient_status" => $request->get('visit_status'),
+                "visit_vital_sign" => $vital,
+                "visit_ccpi" => $request->get('ccpi'),
+                "visit_physical_ex" => $request->get('psexam'),
+                "visit_dx" => $request->get('visit_icd10'),
+                "visit_order" => $visit_items,
+                "visit_create" => '1',
+            ]
+        );
+        return back()->with('success','บันทึกข้อมูลการติดตามสำเร็จ');
     }
 }
