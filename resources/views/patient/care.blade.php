@@ -232,18 +232,21 @@
                         </div>
                         <div class="form-group col-md-12">
                             <label for="">
-                                การวินิจฉัย
+                                การวินิจฉัย 
+                                <small class="text-danger">
+                                    ค้นหาจากรหัสโรค/อาการ
+                                </small>
                             </label>
-                            <select id="visit_icd10" name="visit_icd10" class="basic-select2">
-                                <option>กรุณาเลือก</option>
-                                @foreach($icd10 as $res)
-                                    <option value="{{ $res->id }}">{{ $res->icd10_number." : ".$res->icd10_description }}</option>
-                                @endforeach
+                            <select id="visit_icd10" name="visit_icd10" class="basic-select2" style="width: 100%;">
+                                <option></option>
                             </select>
                         </div>
                         <div class="form-group col-md-12">
                             <label for="">
                                 รายการตรวจรักษา
+                                <small class="text-danger">
+                                    เลือกได้มากกว่า 1 รายการ
+                                </small>
                             </label>
                             <select id="visit_item" name="visit_item[]" class="basic-multiple" multiple="multiple">
                                 <option>กรุณาเลือก</option>
@@ -267,5 +270,28 @@
 </div>
 @endsection
 @section('script')
-
+<script>
+    $(document).ready(function(){        
+        $( "#visit_icd10" ).select2({
+            ajax: { 
+            url: "{{ route('diag.all') }}",
+            type: "post",
+            dataType: 'json',
+            delay: 250,
+                data: function (params) {
+                return {
+                    _token: "{{ csrf_token() }}",
+                    search: params.term
+                };
+            },
+                processResults: function (response) {
+                    return {
+                    results: response
+                    };
+                },
+                cache: true
+            }
+        });
+    });
+</script>
 @endsection

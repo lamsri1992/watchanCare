@@ -38,3 +38,8 @@ Route::group(['prefix' => 'config/hospital'], function () {
 	Route::get('/add','hospitalController@addHospital')->name('hospital.add');
 	Route::get('/hstatus', 'hospitalController@hospitalStatus');
 });
+
+Route::group(['prefix' => 'diag'], function () {
+	Route::get('/','diagController@index');
+	Route::post('/all','diagController@all')->name('diag.all');
+});
