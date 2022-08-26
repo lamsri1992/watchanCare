@@ -15,8 +15,10 @@ class visit extends Controller
                 ->join('icd10','icd10.id','patient_visit.visit_dx')
                 ->where('visit_id',$id)
                 ->first();
+        $ods = $result->visit_order;
         $vital = (explode(",",$result->visit_vital_sign));
-        $order = (explode(",",$result->visit_order));
+        $order = DB::select(DB::raw("select * from item where item_id in ($ods)"));
+
         return Response::json(array(
             'result' => $result,
             'vital' => $vital,

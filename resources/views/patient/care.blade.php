@@ -91,16 +91,16 @@
                 </div>
             </div>
         </div>
-        <div class="card-body" style="font-size: 14px;">
+        <div class="card-body">
             <div class="tab-vertical">
                 <ul class="nav nav-tabs" id="myTab3" role="tablist">
                     @php $i=0; @endphp
                     @foreach ($visit as $vs)
                     @php $i++; @endphp
                     <li class="nav-item">
-                            <a class="nav-link tabClick" id="box-vertical" data-toggle="tab" href="#box-vertical{{ $vs->visit_id }}"
+                            <a class="nav-link tabClick" id="box-vertical" data-toggle="tab" href="#box-vertical{{ @$vs->visit_id }}"
                             role="tab" aria-controls="home" aria-selected="true"
-                            data-id="{{ $vs->visit_id }}">
+                            data-id="{{ @$vs->visit_id }}">
                             <i class="fa-regular fa-calendar-check"></i>
                             {{ DateThai($vs->visit_date) }}
                         </a>
@@ -108,23 +108,16 @@
                     @endforeach
                 </ul>
                 <div class="tab-content" id="myTabContent3">
-                    <div class="tab-pane fade show active" id="box-vertical{{ $vs->visit_id }}" role="tabpanel"
+                    <div class="tab-pane show active" id="box-vertical{{ @$vs->visit_id }}" role="tabpanel"
                         aria-labelledby="box-vertical">
                         <p class="lead">
                             <i class="fa-regular fa-clipboard"></i>
                             ผู้ติดตามการเยี่ยม : นายวัดจันทร์ กัลยา (พยาบาลวิชาชีพ ปฏิบัติการ)
                         </p>
-                        <p>
-                            อาการเมาค้าง เป็นภาวะหรืออาการที่คล้ายกับไข้หวัดใหญ่ คือ การที่ร่างกายขาดน้ำ
-                            เป็นผลที่เกิดหลังจากการดื่มเครื่องดื่มแอลกอฮอล์ในปริมาณที่มากเกินร่างกายจะสามารถรับได้
-                            ส่งผลให้เสียสมดุลของฮอร์โมน เกิดการเปลี่ยนแปลงของสารสื่อประสาท และสารทางชีวภาพอื่นๆ ในร่างกาย
-                        </p>
-                        <p>
-                            อาการเมาค้างโดยทั่วไป ได้แก่ ปวดหัว มึนหัว เวียนศีรษะ คอแห้ง ผิวหน้าแห้ง ริมฝีปากแห้ง หน้าบวม ตาบวมผื่นแดง
-                            รอยแดง หน้าซีดเซียว คลื่นเหียน คลื่นไส้ อาเจียน ปวดท้อง ท้องขึ้น ท้องเฟ้อ หรือท้องร่วง ถ่ายเหลว รับประทานอาหารไม่ได้
-                            เบื่ออาหาร นอนไม่ได้ สะลึมสะลือ กระเพาะอาหารเกิดการระคายเคือง มือสั่น ใจสั่น เหนื่อย เหงื่อออก หรืออ่อนเพลีย หมดแรงลุกไม่ขึ้น
-                            ตัวเย็น กล้ามเนื้อเกร็ง (ตะคริว) ความดันโลหิตลดลง และรู้สึกไม่สบาย สะดุ้ง ตกใจง่าย
-                        </p>
+                        <p id="visit_ccpi"></p>
+                        <p id="visit_phex"></p>
+                        <p id="visit_diag"></p>
+                        <div id="container"></div>
                     </div>
                 </div>
             </div>
@@ -267,6 +260,7 @@
                     <button type="button" class="btn btn-success btn-sm"
                         onclick="Swal.fire({
                             title: 'บันทึกการติดตาม ?',
+                            text: 'หากบันทึกแล้วจะไม่สามารถแก้ไขได้',
                             showCancelButton: true,
                             confirmButtonText: `<i class='fa-solid fa-folder-plus'></i> บันทึกข้อมูล`,
                             cancelButtonText: `<i class='fa-regular fa-times-circle'></i> ยกเลิก`,
@@ -313,11 +307,33 @@
     });
 
     $('.tabClick').click(function () {
+        $('#container').html("");
         var id = $(this).data('id');
         $.ajax({
-            url: "/api/visit/" + id,
+            url: "/api/get_visit/" + id,
             success: function (data) {
-                console.log(data)
+                if ($.trim(data)) {
+                    $('#visit_ccpi').text("ประวัติการเจ็บป่วย : " + data.result.visit_ccpi);
+                    $('#visit_phex').text("ประวัติการตรวจร่างกาย : " + data.result.visit_physical_ex);
+                    $('#visit_diag').text("การวินิจฉัย : " + data.result.icd10_number + " " + data.result.icd10_description);
+
+                    var container = document.querySelector('#container');
+                    var ul = document.createElement('ul');
+                    Array.from(data.order).forEach(element => {
+                        console.log(element);
+                        var li = document.createElement('li');
+                            li.textContent = element.item_common_name;
+                            ul.appendChild(li);     
+                    });
+                    container.appendChild(ul);
+                }
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'ไม่สามารถเชื่อมต่อ API ได้',
+                    text: 'Error: ' + textStatus + ' - ' + errorThrown,
+                })
             },
         });
     });
