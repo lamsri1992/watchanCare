@@ -184,6 +184,7 @@ class patientController extends Controller
         $hcode = DB::table('hcode')->where('hcode','!=',$patient->hcode)->get();
         $visit = DB::table('patient_visit')
                 ->where('visit_patient_care',$id)
+                ->orderBy('visit_id','desc')
                 ->get();
         return view('patient.care',['patient'=>$patient,'item'=>$item,'visit'=>$visit,'hcode'=>$hcode]);
     }

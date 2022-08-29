@@ -68,7 +68,7 @@
         <div class="card-header py-3">
             <div class="row">
                 <div class="col-md-6">
-                    <h6 class="m-0 font-weight-normal text-secondary">
+                    <h6 class="m-0 font-weight-bold text-secondary">
                         <i class="fa-solid fa-list-check"></i>
                         บันทึกข้อมูลการติดตามผู้ป่วย
                     </h6>
@@ -84,16 +84,15 @@
                             <i class="fa-solid fa-people-arrows"></i>
                             ส่งต่อการรักษาผู้ป่วย
                         </button>
-                        <button type="button" class="btn btn-secondary btn-sm">
+                        <button type="button" id="btnDC" class="btn btn-secondary btn-sm">
                             <i class="fa-solid fa-clipboard-check"></i>
                             Discharge
                         </button>
                     </div>
                     @else
-                        <span>
-                            <b>สถานะการดูแล : </b> 
+                        <span class="font-weight-bold">
                             <i class="{{ $patient->status_icon." ".$patient->status_color }}"></i>
-                            {{ $patient->status_name }}
+                            {{ $patient->status_name." ".DateThai($patient->pc_date_end)}}
                         </span>
                     @endif
                 </div>
@@ -118,6 +117,10 @@
                 <div class="tab-content" id="myTabContent3">
                     <div class="tab-pane show active" id="box-vertical{{ @$vs->visit_id }}" role="tabpanel"
                         aria-labelledby="box-vertical">
+                        <h2 id="div_data" class="text-center text-secondary">
+                            <i class="fa-solid fa-hand-pointer"></i>
+                            เลือกดูประวัติการติดตามจากวันที่
+                        </h2>
                         <p id="div_head" class="lead"></p>
                         <p id="visit_ccpi"></p>
                         <p id="visit_phex"></p>
@@ -391,6 +394,7 @@
             url: "/api/get_visit/" + id,
             success: function (data) {
                 if ($.trim(data)) {
+                    $('#div_data').html("");
                     $('#div_head').html("");
                     var div_head = document.querySelector('#div_head');
                     var created = document.createElement('b');
@@ -454,6 +458,41 @@
                 })
             },
         });
+    });
+
+    $('#btnDC').on("click", function (event) {
+        event.preventDefault();
+        Swal.fire({
+            title: 'ยืนยันการจบกระบวนการ ?',
+            text: '{{ $patient->patient_name }}',
+            showCancelButton: true,
+            confirmButtonText: `<i class="fa-solid fa-check-circle"></i> Discharge`,
+            cancelButtonText: `ยกเลิก`,
+            icon: 'success',
+            input: 'textarea',
+            inputPlaceholder: 'ระบุหมายเหตุการ Discharge',
+        }).then((result) => {
+            if (result.isConfirmed) {
+                var formData = result.value;
+                var token = "{{ csrf_token() }}";
+                console.log(formData);
+                $.ajax({
+                    url: "",
+                    data:{formData: formData,_token: token},
+                    success: function (data) {
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Discharge สำเร็จ',
+                            showConfirmButton: false,
+                            timer: 3000
+                        })
+                        window.setTimeout(function () {
+                            location.reload()
+                        }, 1500);
+                    }
+                });
+            }
+        })
     });
 </script>
 @endsection
