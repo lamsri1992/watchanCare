@@ -181,10 +181,11 @@ class patientController extends Controller
                 ->where('pc_id',$id)
                 ->first();
         $item = DB::table('item')->where('item_active',1)->get();
+        $hcode = DB::table('hcode')->where('hcode','!=',$patient->hcode)->get();
         $visit = DB::table('patient_visit')
                 ->where('visit_patient_care',$id)
                 ->get();
-        return view('patient.care',['patient'=>$patient,'item'=>$item,'visit'=>$visit]);
+        return view('patient.care',['patient'=>$patient,'item'=>$item,'visit'=>$visit,'hcode'=>$hcode]);
     }
 
     public function visit(Request $request,$id)
@@ -236,5 +237,45 @@ class patientController extends Controller
             ]
         );
         return back()->with('success','บันทึกข้อมูลการติดตามสำเร็จ');
+    }
+
+    public function transfer(Request $request,$id)
+    {
+        $validatedData = $request->validate(
+            [
+                'visit_end' => 'required',
+                'patient_hcode' => 'required',
+                'note' => 'required',
+            ],
+        );
+
+        $res = DB::table('patient_clinic')->where('pc_id',$id)->first();
+        $patient = DB::table('patient')->where('patient_hn',$res->pc_hn)->first();
+
+        DB::table('patient_clinic')->where('pc_id', $id)->update(
+            [
+                "pc_date_end" => $request->get('visit_end'),
+                "pc_status" => 5,
+            ]
+        );
+
+        DB::table('patient_clinic')->insert(
+            [
+                "pc_hn" => $patient->patient_hn,
+                "pc_date_start" => $request->get('visit_end'),
+                "pc_hcode" => $request->get('patient_hcode'),
+                "pc_clinic" => $res->pc_clinic,
+            ]
+        );
+
+        $last = DB::table('patient_clinic')->orderBy('pc_id','desc')->first();
+        DB::table('transfer')->insert(
+            [
+                "tran_pc_id" => $last->pc_id,
+                "tran_send" => 1,
+            ]
+        );
+
+        return back()->with('success','ส่งต่อผู้ป่วยสำเร็จ : HN '.$patient->patient_hn." ".$patient->patient_name);
     }
 }

@@ -70,16 +70,17 @@
                 <div class="col-md-6">
                     <h6 class="m-0 font-weight-normal text-secondary">
                         <i class="fa-solid fa-list-check"></i>
-                        การนัดหมายติดตามผู้ป่วย
+                        บันทึกข้อมูลการติดตามผู้ป่วย
                     </h6>
                 </div>
                 <div class="col-md-6 text-right">
+                    @if ($patient->pc_status == 1)
                     <div class="btn-group" role="group">
                         <button type="button" class="btn btn-secondary btn-sm" data-toggle="modal" data-target="#addNew">
                             <i class="fa-solid fa-calendar-plus"></i>
                             เพิ่มรายการติดตาม
                         </button>
-                        <button type="button" class="btn btn-secondary btn-sm">
+                        <button type="button" class="btn btn-secondary btn-sm" data-toggle="modal" data-target="#transfer">
                             <i class="fa-solid fa-people-arrows"></i>
                             ส่งต่อการรักษาผู้ป่วย
                         </button>
@@ -88,6 +89,13 @@
                             Discharge
                         </button>
                     </div>
+                    @else
+                        <span>
+                            <b>สถานะการดูแล : </b> 
+                            <i class="{{ $patient->status_icon." ".$patient->status_color }}"></i>
+                            {{ $patient->status_name }}
+                        </span>
+                    @endif
                 </div>
             </div>
         </div>
@@ -272,6 +280,78 @@
                         })">
                         <i class="fa-solid fa-save"></i>
                         บันทึกการติดตาม
+                    </button>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+
+
+<!-- Modal -->
+<div class="modal fade" id="transfer" aria-labelledby="transferLabel" aria-hidden="true">
+    <form action="{{ route('patient.transfer',$patient->pc_id) }}">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="transferLabel">
+                        <i class="fa-solid fa-people-arrows"></i>
+                        ส่งต่อการรักษาผู้ป่วย
+                    </h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-row">
+                        <div class="form-group col-md-12">
+                            <label for="">
+                                <i class="fa-solid fa-calendar-check"></i>
+                                วันที่สิ้นสุดการดูแล
+                            </label>
+                            <input type="text" id="visit_end" name="visit_end" class="form-control basicDate"
+                                value="{{ old('visit_end') }}"
+                                placeholder="เลือกวันที่" readonly>
+                        </div>
+                        <div class="form-group col-md-12">
+                            <label for="">หน่วยบริการที่รับดูแลต่อ</label>
+                            <select id="patient_hcode" name="patient_hcode" class="basic-select2">
+                                <option value="">กรุณาเลือก</option>
+                                @foreach($hcode as $res)
+                                    <option value="{{ $res->hcode }}"
+                                        {{ old('patient_hcode') === $res->hcode ? 'selected' : '' }}>
+                                        {{ $res->hcode." : ".$res->hname }}
+                                    </option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div class="form-group col-md-12">
+                            <label for="">
+                                บันทึกข้อความ
+                            </label>
+                            <textarea type="text" name="note" rows="5" class="form-control" value="{{ old('note') }}"></textarea>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal">ปิดหน้าต่าง</button>
+                    <button type="button" class="btn btn-success btn-sm"
+                        onclick="Swal.fire({
+                            title: 'ยืนยันการส่งต่อผู้ป่วย ?',
+                            text: '{{ $patient->patient_name }}',
+                            showCancelButton: true,
+                            confirmButtonText: `<i class='fa-regular fa-check-circle'></i> ส่งต่อผู้ป่วย`,
+                            cancelButtonText: `<i class='fa-regular fa-times-circle'></i> ยกเลิก`,
+                            icon: 'success',
+                        }).then((result) => {
+                            if (result.isConfirmed) {
+                                form.submit();
+                            } else if (result.isDenied) {
+                                form.reset();
+                            }
+                        })">
+                        <i class="fa-solid fa-paper-plane"></i>
+                        ส่งต่อผู้ป่วย
                     </button>
                 </div>
             </div>
