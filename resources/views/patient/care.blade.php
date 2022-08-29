@@ -110,10 +110,6 @@
                 <div class="tab-content" id="myTabContent3">
                     <div class="tab-pane show active" id="box-vertical{{ @$vs->visit_id }}" role="tabpanel"
                         aria-labelledby="box-vertical">
-                        {{-- <p class="lead">
-                            <i class="fa-regular fa-clipboard"></i>
-                            ผู้ติดตามการเยี่ยม : นายวัดจันทร์ กัลยา (พยาบาลวิชาชีพ ปฏิบัติการ)
-                        </p> --}}
                         <p id="div_head" class="lead"></p>
                         <p id="visit_ccpi"></p>
                         <p id="visit_phex"></p>
@@ -342,6 +338,9 @@
                     var row =
                         $(
                             '<thead class="thead-light text-center">' +
+                                '<tr>' +
+                                    '<th colspan="8">บันทึกสัญญาณชีพ : Vital Sign</th>' +
+                                '</tr>' +
                                 '<tr>' +
                                     '<th>Temp</th>' +
                                     '<th>BP</th>' +
