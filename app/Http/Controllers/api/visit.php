@@ -13,6 +13,7 @@ class visit extends Controller
     {
         $result = DB::table('patient_visit')
                 ->join('icd10','icd10.id','patient_visit.visit_dx')
+                ->join('users','users.user_id','patient_visit.visit_create')
                 ->where('visit_id',$id)
                 ->first();
         $ods = $result->visit_order;

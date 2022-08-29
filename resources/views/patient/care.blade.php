@@ -110,14 +110,16 @@
                 <div class="tab-content" id="myTabContent3">
                     <div class="tab-pane show active" id="box-vertical{{ @$vs->visit_id }}" role="tabpanel"
                         aria-labelledby="box-vertical">
-                        <p class="lead">
+                        {{-- <p class="lead">
                             <i class="fa-regular fa-clipboard"></i>
                             ผู้ติดตามการเยี่ยม : นายวัดจันทร์ กัลยา (พยาบาลวิชาชีพ ปฏิบัติการ)
-                        </p>
+                        </p> --}}
+                        <p id="div_head" class="lead"></p>
                         <p id="visit_ccpi"></p>
                         <p id="visit_phex"></p>
                         <p id="visit_diag"></p>
                         <div id="container"></div>
+                        <table id="vital" class="table table-bordered table-sm"></table>
                     </div>
                 </div>
             </div>
@@ -313,19 +315,56 @@
             url: "/api/get_visit/" + id,
             success: function (data) {
                 if ($.trim(data)) {
+                    $('#div_head').html("");
+                    var div_head = document.querySelector('#div_head');
+                    var created = document.createElement('b');
+                        created.textContent = "ผู้บันทึกการติดตาม : "+ data.result.user_name +" "+ data.result.user_position;
+                        div_head.appendChild(created); 
+
                     $('#visit_ccpi').text("ประวัติการเจ็บป่วย : " + data.result.visit_ccpi);
                     $('#visit_phex').text("ประวัติการตรวจร่างกาย : " + data.result.visit_physical_ex);
                     $('#visit_diag').text("การวินิจฉัย : " + data.result.icd10_number + " " + data.result.icd10_description);
 
                     var container = document.querySelector('#container');
+                    var text = document.createElement('b');
+                            text.textContent = "รายการตรวจรักษา";
+                            container.appendChild(text); 
                     var ul = document.createElement('ul');
                     Array.from(data.order).forEach(element => {
-                        console.log(element);
                         var li = document.createElement('li');
                             li.textContent = element.item_common_name;
                             ul.appendChild(li);     
                     });
                     container.appendChild(ul);
+                    
+                    $('thead').html("");
+                    $('tbody').html("");
+                    var row =
+                        $(
+                            '<thead class="thead-light text-center">' +
+                                '<tr>' +
+                                    '<th>Temp</th>' +
+                                    '<th>BP</th>' +
+                                    '<th>RR</th>' +
+                                    '<th>HR</th>' +
+                                    '<th>น้ำหนัก</th>' +
+                                    '<th>ส่วนสูง</th>' +
+                                    '<th>BMI</th>' +
+                                    '<th>O2sat</th>' +
+                                '</tr>' +
+                            '</thead>' +
+                            '<tbody class="text-center"><tr>' + 
+                            '<td>' + data.vital[0] + '</td>' +
+                            '<td>' + data.vital[1] + '</td>' +
+                            '<td>' + data.vital[2] + '</td>' +
+                            '<td>' + data.vital[3] + '</td>' +
+                            '<td>' + data.vital[4] + '</td>' +
+                            '<td>' + data.vital[5] + '</td>' +
+                            '<td>' + data.vital[6] + '</td>' +
+                            '<td>' + data.vital[7] + '</td>' +
+                            '</tr></tbody>'
+                            );
+                    $('#vital').append(row);
                 }
             },
             error: function (jqXHR, textStatus, errorThrown) {
